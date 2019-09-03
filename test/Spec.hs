@@ -100,6 +100,22 @@ spec_e getBackend =
   it "bar" $
   QuickWai.property $ \n -> post' n `shouldRespondWith` 200
 
+spec_f :: IO Backend -> Spec
+spec_f getBackend = do
+  backend <- runIO getBackend
+  before (return $ app backend) $
+    describe "foo" $
+    it "bar" $
+    QuickWai.property $ \n -> post' n `shouldRespondWith` 200
+
+spec_g :: IO Backend -> Spec
+spec_g getBackend =
+  describe "foo" $
+  it "bar" $ property $ \genN -> monadicIO $ do
+  backend <- run getBackend
+  n <- run genN
+  post' n `shouldRespondWith` 200
+
 main :: IO ()
 main = do
   quickCheck prop_a
@@ -112,3 +128,5 @@ main = do
   hspec $ spec_c backend
   hspec $ spec_d openBackend
   hspec $ spec_e openBackend
+  hspec $ spec_f openBackend
+  hspec $ spec_g openBackend
