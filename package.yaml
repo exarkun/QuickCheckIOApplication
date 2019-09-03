@@ -52,3 +52,5 @@ tests:
     - servant
     - servant-server
     - aeson
+    - text
+    - utf8-string
