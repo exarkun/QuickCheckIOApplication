@@ -38,10 +38,11 @@ app :: Backend -> Application
 app backend = serve theAPI (theServer backend)
 
 prop :: Property
-prop = with (app Backend) $ property $ return True
-
--- property $
---   post (printf "/%d" (5 :: Integer)) `shouldRespondWith` 200
+prop = property $ \n ->
+  do
+    backend <- openBackend
+    with (app backend) $
+      post (printf "/%d" (n :: Integer)) `shouldRespondWith` 200
 
 main :: IO ()
 main = quickCheck prop
